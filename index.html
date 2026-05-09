@@ -2,10 +2,22 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CBT SMAN 1 PRONOJIWO</title>
+    
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CBT SMANPRO">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/x8WCDKRT/Logo-Smanpro.png">
+    
+    <!-- Fixed Manifest Syntax -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"CBT SMAN 1 PRONOJIWO","short_name":"CBT SMANPRO","start_url":".","display":"standalone","background_color":"#1e3a8a","theme_color":"#1e3a8a","icons":[{"src":"https://i.postimg.cc/x8WCDKRT/Logo-Smanpro.png","sizes":"512x512","type":"image/png"}]}'>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         .iframe-container { height: calc(100vh - 80px); }
@@ -20,7 +32,6 @@
             animation: spin 0.8s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        input:disabled, select:disabled { opacity: 0.7; cursor: not-allowed; }
     </style>
 </head>
 <body class="bg-gray-50 text-slate-900 leading-tight">
@@ -29,9 +40,9 @@
     <div id="login-screen" class="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-900 via-slate-900 to-black">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-lg animate-fade">
             <div class="flex flex-col items-center mb-8">
-                <img src="https://i.postimg.cc/zHF5TH69/logo-sman1.png" alt="Logo SMAN 1" class="h-20 w-auto mb-4 drop-shadow-md" onerror="this.src='https://placehold.co/200x200/2563eb/white?text=SMAN1'">
+                <img src="https://i.postimg.cc/x8WCDKRT/Logo-Smanpro.png" alt="Logo SMANPRO" class="h-24 w-auto mb-4 drop-shadow-md" onerror="this.src='https://placehold.co/200x200/2563eb/white?text=SMANPRO'">
                 <h1 class="text-2xl font-extrabold text-center text-slate-800 tracking-tight">CBT SMAN 1 PRONOJIWO</h1>
-                <p class="text-gray-500 text-xs mt-1 font-medium text-center uppercase tracking-widest">Ujian Online Terintegrasi</p>
+                <p class="text-gray-500 text-[10px] mt-1 font-medium text-center uppercase tracking-widest">Sistem Ujian Online Terintegrasi</p>
             </div>
 
             <!-- Role Selector -->
@@ -46,6 +57,7 @@
                 </button>
             </div>
 
+            <!-- Input Fields -->
             <div id="form-container" class="space-y-4">
                 <div id="student-inputs" class="space-y-4">
                     <input type="text" id="login-name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Nama Lengkap">
@@ -82,6 +94,7 @@
         </div>
     </div>
 
+    <!-- (Admin Screen & Exam Screen logic remains consistent) -->
     <div id="admin-screen" class="hidden min-h-screen bg-slate-50 p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
@@ -91,9 +104,8 @@
                 </div>
                 <button onclick="logout()" class="bg-red-50 text-red-600 px-6 py-2.5 rounded-2xl text-sm font-bold hover:bg-red-100 transition-colors">Log Keluar</button>
             </div>
-
+            <!-- Tables and Management UI... -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Management Panel (Admin Only) -->
                 <div id="admin-management" class="lg:col-span-4 space-y-6">
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                         <h3 class="font-bold mb-4 text-slate-800 flex items-center gap-2">Sesi Ujian Baru</h3>
@@ -102,7 +114,7 @@
                             <input type="text" id="admin-url" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" placeholder="URL Google Form">
                             <div class="flex gap-2">
                                 <input type="text" id="admin-pin" class="flex-grow p-3 bg-gray-50 border rounded-xl text-sm font-mono font-bold" placeholder="PIN 6 DIGIT">
-                                <button onclick="generatePIN('admin-pin')" class="bg-slate-100 p-3 rounded-xl hover:bg-slate-200 transition-all" title="Acak PIN">
+                                <button onclick="generatePIN('admin-pin')" class="bg-slate-100 p-3 rounded-xl hover:bg-slate-200 transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
                                 </button>
                             </div>
@@ -111,13 +123,12 @@
                                 <option value="true">SET AKTIF</option>
                                 <option value="false">NON-AKTIFKAN</option>
                             </select>
-                            <button onclick="saveExamConfig()" id="btn-save-config" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-blue-700 transition-all text-[10px] flex items-center justify-center gap-2 uppercase">
+                            <button onclick="saveExamConfig()" id="btn-save-config" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2 uppercase text-[10px]">
                                 <span id="save-config-text">Update Database</span>
                                 <div id="save-config-spinner" class="hidden loading-spinner !border-t-white"></div>
                             </button>
                         </div>
                     </div>
-
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                         <h3 class="font-bold mb-4 text-slate-800">Manajemen Pengawas</h3>
                         <div class="space-y-3 mb-6 border-b pb-6">
@@ -131,32 +142,21 @@
                         <div id="proctor-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
                     </div>
                 </div>
-
                 <div id="monitoring-panel" class="lg:col-span-8 space-y-6">
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-slate-800">Daftar Ujian Aktif</h3>
-                            <button onclick="loadExamsOnly()" class="text-blue-600 font-bold text-[10px] flex items-center gap-1 uppercase tracking-tighter hover:underline">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-                                Refresh Data
-                            </button>
+                            <button onclick="loadExamsOnly()" class="text-blue-600 font-bold text-[10px] uppercase">Refresh Data</button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 text-gray-400 font-bold uppercase tracking-wider">
-                                    <tr>
-                                        <th class="p-3">MAPEL</th>
-                                        <th class="p-3">PIN AKTIF</th>
-                                        <th class="p-3">DURASI</th>
-                                        <th class="p-3">STATUS</th>
-                                        <th class="p-3">AKSI</th>
-                                    </tr>
+                                <thead class="bg-gray-50 text-gray-400 font-bold uppercase">
+                                    <tr><th class="p-3">MAPEL</th><th class="p-3">PIN AKTIF</th><th class="p-3">DURASI</th><th class="p-3">STATUS</th><th class="p-3">AKSI</th></tr>
                                 </thead>
                                 <tbody id="active-exams-table" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
                     </div>
-
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                         <h3 class="font-bold text-slate-800 mb-4">Monitoring Pelanggaran</h3>
                         <div class="overflow-x-auto max-h-[300px]">
@@ -201,7 +201,7 @@
 
     <!-- Modals -->
     <div id="alert-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-[2rem] w-full max-w-sm shadow-2xl animate-fade text-center border-t-8 border-blue-500" id="alert-container">
+        <div class="bg-white p-8 rounded-[2rem] w-full max-w-sm shadow-2xl text-center border-t-8 border-blue-500" id="alert-container">
             <h3 id="alert-title" class="text-xl font-black mb-2 text-slate-800">Pemberitahuan</h3>
             <p id="alert-message" class="text-sm text-gray-500 mb-6 leading-relaxed"></p>
             <button onclick="closeAlert()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-slate-900 transition-all">Selesai</button>
@@ -216,7 +216,7 @@
 </div>
 
 <script>
-    const gasUrl = "https://script.google.com/macros/s/AKfycbyYdBG4NORTWg4jnwY49xuqjyoI_DGKj7kL5vm3fobP_XXMtJGZYrGg2BAn0qw0xFaICQ/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbw_XYorpf_8LICeywq9o6LBOjEnN1sah80W_n5YS6D-w5QsAg9CyPpcxGeeBpf1caqo/exec";
     let currentRole = 'peserta';
     let isExamStarted = false;
     let timerInterval = null;
@@ -237,7 +237,6 @@
         const input = document.getElementById(inputId);
         const iconId = inputId === 'login-pin' ? 'eye-icon-pin' : 'eye-icon-staff';
         const icon = document.getElementById(iconId);
-        
         if (input.type === "password") {
             input.type = "text";
             icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
@@ -272,49 +271,62 @@
         return pin;
     }
 
+    async function enterFullscreen() {
+        try {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) { await elem.requestFullscreen(); }
+            else if (elem.webkitRequestFullscreen) { await elem.webkitRequestFullscreen(); }
+        } catch (e) { console.warn("Fullscreen blocked. Run on HTTPS or GitHub Pages."); }
+    }
+
     async function handleLogin() {
         const btn = document.getElementById('btn-login'), txt = document.getElementById('btn-login-text'), spinner = document.getElementById('btn-login-spinner');
         
+        // Prevent accidental multiple clicks
+        if (btn.disabled) return;
+
         try {
             if (currentRole === 'peserta') {
                 const name = document.getElementById('login-name').value.trim();
                 const cls = document.getElementById('login-class').value;
                 const sub = document.getElementById('login-subject').value.toUpperCase().trim();
-                const pin = document.getElementById('login-pin').value;
+                const pin = document.getElementById('login-pin').value.trim();
 
-                if (!name || !sub || !pin) throw new Error("Lengkapi semua data login!");
+                if (!name || !sub || !pin) throw new Error("Mohon lengkapi data!");
                 
-                setLoading(btn, txt, spinner, true, "Verifikasi...");
+                setLoading(btn, txt, spinner, true, "Menghubungkan...");
+                
+                const res = await fetch(`${gasUrl}?action=getExam&subject=${sub}&studentName=${encodeURIComponent(name)}&studentClass=${cls}`, { method: 'POST' });
+                const data = await res.json();
+                
+                if (data.error) throw new Error(data.error);
+                if (data.pin !== pin) throw new Error("PIN Ujian Salah!");
+                if (data.active !== "true") throw new Error("Mata Pelajaran Sedang Non-Aktif.");
+                if (data.remainingSeconds <= 0) throw new Error("Waktu ujian Anda sudah habis.");
 
-                const res = await fetch(`${gasUrl}?action=getExam&subject=${encodeURIComponent(sub)}&studentName=${encodeURIComponent(name)}&studentClass=${cls}`, { method: 'POST' });
-                const exam = await res.json();
-
-                if (exam.error) throw new Error(exam.error);
-                if (exam.pin !== pin) throw new Error("PIN Ujian Salah!");
-                if (exam.active !== "true") throw new Error("Ujian sedang Non-Aktif.");
-                if (exam.remainingSeconds <= 0) throw new Error("Waktu ujian Anda sudah habis.");
-
-                studentData = { name, className: cls, subject: sub, url: exam.url, remainingSeconds: parseInt(exam.remainingSeconds) };
+                studentData = { name, className: cls, subject: sub, url: data.url, remainingSeconds: data.remainingSeconds };
+                
+                await enterFullscreen();
                 startExam();
             } else {
                 const name = document.getElementById('staff-username').value.trim();
                 const pass = document.getElementById('staff-password').value;
-                if (!name || !pass) throw new Error("Isi Username & Password!");
-
+                if (!name || !pass) throw new Error("Isi Data!");
+                
                 setLoading(btn, txt, spinner, true, "Memverifikasi...");
-
+                
                 const res = await fetch(`${gasUrl}?action=loginStaff&name=${encodeURIComponent(name)}&password=${encodeURIComponent(pass)}`, { method: 'POST' });
                 const data = await res.json();
-
-                if (!data.success) throw new Error("Kredensial Salah! Cek Username/Password.");
+                
+                if (!data.success) throw new Error("Kredensial Salah!");
                 
                 myRole = data.role;
                 renderDashboard();
             }
-        } catch (e) {
-            showMessage("Gagal", e.message, "error");
-        } finally {
-            setLoading(btn, txt, spinner, false, "Masuk ke Sistem");
+        } catch (e) { 
+            showMessage("Gagal", e.message, "error"); 
+        } finally { 
+            setLoading(btn, txt, spinner, false, "Masuk ke Sistem"); 
         }
     }
 
@@ -338,7 +350,7 @@
                 if (isExamStarted && document.activeElement !== document.getElementById('exam-iframe')) {
                     triggerViolation("Pindah Layar/Split Screen");
                 }
-            }, 400);
+            }, 500);
         };
     }
 
@@ -346,6 +358,7 @@
         isExamStarted = false;
         document.getElementById('violation-overlay').style.display = 'flex';
         document.getElementById('exam-iframe').src = "about:blank";
+        if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); }
         const params = new URLSearchParams({ action: 'logViolation', name: studentData.name, class: studentData.className, subject: studentData.subject, type });
         await fetch(`${gasUrl}?${params.toString()}`, { method: 'POST' });
     }
@@ -381,7 +394,7 @@
             data.data.slice(1).forEach(p => {
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center p-3 bg-gray-50 rounded-xl text-xs";
-                div.innerHTML = `<span class="font-bold text-slate-700">${p[0]}</span>${p[0].toLowerCase() !== 'admin' ? `<button onclick="delProctor('${p[0]}')" class="text-red-500 font-bold hover:underline">Hapus</button>` : '<span class="text-gray-400">Default</span>'}`;
+                div.innerHTML = `<span class="font-bold">${p[0]}</span>${p[0].toLowerCase() !== 'admin' ? `<button onclick="delProctor('${p[0]}')" class="text-red-500 font-bold">Hapus</button>` : ''}`;
                 list.appendChild(div);
             });
         }
@@ -394,7 +407,6 @@
             const res = await fetch(`${gasUrl}?action=getAllExams`, { method: 'POST' });
             const data = await res.json();
             tbody.innerHTML = "";
-            
             data.data.slice(1).forEach(e => {
                 const isActive = String(e[4]).toLowerCase() === "true";
                 const tr = document.createElement('tr');
@@ -402,41 +414,44 @@
                     <td class="p-3 font-bold text-slate-700">${e[0]}</td>
                     <td class="p-3">
                         <div class="flex items-center gap-2">
-                            <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-lg border border-amber-200 font-mono font-black text-sm">${e[2]}</span>
-                            <button onclick="refreshPin('${e[0]}','${e[1]}','${e[3]}')" class="text-blue-500 hover:rotate-90 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg></button>
+                            <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-lg border border-amber-200 font-mono font-bold">${e[2]}</span>
+                            ${myRole === 'admin' ? `
+                                <button onclick="refreshPin('${e[0]}','${e[1]}','${e[3]}')" title="Ganti PIN Baru" class="text-blue-500 active:scale-90 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                                </button>
+                            ` : ''}
                         </div>
                     </td>
-                    <td class="p-3 font-medium">${e[3]}m</td>
+                    <td class="p-3 text-slate-500">${e[3]}m</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-full text-[9px] font-black ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}">${isActive ? 'AKTIF' : 'NON-AKTIF'}</span></td>
                     <td class="p-3">
-                        <span class="px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}">
-                            ${isActive ? 'AKTIF' : 'NON-AKTIF'}
-                        </span>
-                    </td>
-                    <td class="p-3">
-                        ${myRole === 'admin' ? `<button onclick="delExam('${e[0]}')" class="text-red-500 font-bold hover:underline">Hapus</button>` : '-'}
+                        ${myRole === 'admin' ? `
+                            <div class="flex gap-3">
+                                <button onclick="toggleExamStatus('${e[0]}','${e[1]}','${e[2]}','${e[3]}',${isActive})" class="${isActive ? 'text-amber-600' : 'text-green-600'} font-bold underline text-[10px] uppercase">
+                                    ${isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                                </button>
+                                <button onclick="delExam('${e[0]}')" class="text-red-500 font-bold underline text-[10px] uppercase">Hapus</button>
+                            </div>
+                        ` : '-'}
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
-        } catch(e) {
-            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-red-500 text-center">Gagal memuat data.</td></tr>`;
-        }
+        } catch(e) { tbody.innerHTML = "<tr><td colspan='5' class='text-center p-4 text-red-500'>Gagal Muat Data</td></tr>"; }
     }
 
-    async function refreshPin(subject, url, duration) {
-        const newPin = generatePIN();
-        if(confirm(`Buat PIN baru untuk ${subject}?`)) {
-            await fetch(`${gasUrl}?action=saveConfig&subject=${subject}&url=${url}&pin=${newPin}&duration=${duration}&active=true`, { method: 'POST' });
-            loadExamsOnly();
-        }
+    async function toggleExamStatus(subject, url, pin, duration, currentStatus) {
+        const newStatus = !currentStatus;
+        await fetch(`${gasUrl}?action=saveConfig&subject=${subject}&url=${url}&pin=${pin}&duration=${duration}&active=${newStatus}`, { method: 'POST' });
+        loadExamsOnly();
     }
 
     async function saveExamConfig() {
         const btn = document.getElementById('btn-save-config'), txt = document.getElementById('save-config-text'), spinner = document.getElementById('save-config-spinner');
         const sub = document.getElementById('admin-subject').value.toUpperCase().trim(), url = document.getElementById('admin-url').value;
         const pin = document.getElementById('admin-pin').value, dur = document.getElementById('admin-duration').value, act = document.getElementById('admin-active').value;
-        if (!sub || !url || !pin || !dur) return showMessage("Peringatan", "Lengkapi semua data.", "error");
-        setLoading(btn, txt, spinner, true, "Menyimpan...");
+        if (!sub || !url || !pin || !dur) return showMessage("Gagal", "Lengkapi data!", "error");
+        setLoading(btn, txt, spinner, true, "Simpan...");
         await fetch(`${gasUrl}?action=saveConfig&subject=${sub}&url=${url}&pin=${pin}&duration=${dur}&active=${act}`, { method: 'POST' });
         setLoading(btn, txt, spinner, false, "Update Database");
         loadAllData();
@@ -446,7 +461,7 @@
         const btn = document.getElementById('btn-add-proctor'), txt = document.getElementById('add-proctor-text'), spinner = document.getElementById('add-proctor-spinner');
         const name = document.getElementById('new-proctor-name').value, pass = document.getElementById('new-proctor-pass').value;
         if (!name || !pass) return;
-        setLoading(btn, txt, spinner, true, "Menambah...");
+        setLoading(btn, txt, spinner, true, "Tambah...");
         await fetch(`${gasUrl}?action=saveProctor&name=${encodeURIComponent(name)}&password=${encodeURIComponent(pass)}`, { method: 'POST' });
         setLoading(btn, txt, spinner, false, "Tambah Otoritas");
         document.getElementById('new-proctor-name').value = ""; document.getElementById('new-proctor-pass').value = "";
@@ -464,7 +479,7 @@
             tbody.innerHTML = "";
             data.data.slice(1).reverse().forEach(r => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td class="p-3 text-gray-400">${new Date(r[0]).toLocaleTimeString()}</td><td class="p-3 font-bold">${r[1]}</td><td class="p-3 text-slate-500">${r[2]}</td><td class="p-3 font-medium">${r[3]}</td><td class="p-3 text-red-600 font-black">${r[4]}</td>`;
+                tr.innerHTML = `<td class="p-3 text-gray-400">${new Date(r[0]).toLocaleTimeString()}</td><td class="p-3 font-bold">${r[1]}</td><td class="p-3">${r[2]}</td><td class="p-3">${r[3]}</td><td class="p-3 text-red-600 font-black">${r[4]}</td>`;
                 tbody.appendChild(tr);
             });
         } catch(e){}
@@ -478,7 +493,7 @@
     }
     function closeAlert() { document.getElementById('alert-modal').classList.add('hidden'); }
     function confirmExit() { if (confirm("Keluar dari ujian?")) logout(); }
-    function logout() { isExamStarted = false; clearInterval(timerInterval); location.reload(); }
+    function logout() { isExamStarted = false; clearInterval(timerInterval); if (document.fullscreenElement) { document.exitFullscreen().catch(()=>{}); } location.reload(); }
 </script>
 </body>
 </html>
