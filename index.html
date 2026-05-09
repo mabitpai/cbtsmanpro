@@ -39,7 +39,8 @@
     <div id="login-screen" class="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-900 via-slate-900 to-black">
         <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-lg animate-fade">
             <div class="flex flex-col items-center mb-8">
-                <img src="https://i.postimg.cc/x8WCDKRT/Logo-Smanpro.png" alt="Logo SMANPRO" class="h-24 w-auto mb-4 drop-shadow-md" onerror="this.src='https://placehold.co/200x200/2563eb/white?text=SMANPRO'">
+                <!-- Fix: Added cache-buster and defined explicit width/height for mobile -->
+                <img src="https://i.postimg.cc/x8WCDKRT/Logo-Smanpro.png?v=2" alt="Logo SMANPRO" class="h-24 w-24 object-contain mb-4 drop-shadow-md block mx-auto" onerror="this.src='https://placehold.co/200x200/2563eb/white?text=SMANPRO'">
                 <h1 class="text-2xl font-extrabold text-center text-slate-800 tracking-tight text-nowrap">CBT SMAN 1 PRONOJIWO</h1>
                 <p class="text-gray-500 text-[10px] mt-1 font-medium text-center uppercase tracking-widest">Sistem Ujian Online Terintegrasi</p>
             </div>
@@ -106,7 +107,39 @@
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
                         <h3 class="font-bold mb-4 text-slate-800">Sesi Ujian Baru</h3>
                         <div class="space-y-3">
-                            <input type="text" id="admin-subject" class="w-full p-3 bg-gray-50 border rounded-xl text-sm uppercase" placeholder="KODE MAPEL">
+                            <input type="text" id="admin-subject" class="w-full p-3 bg-gray-50 border rounded-xl text-sm uppercase" placeholder="KODE MAPEL (Contoh: MTK10)">
+                            <!-- Dropdown Mata Pelajaran SMA -->
+                            <select id="admin-subject-name" class="w-full p-3 bg-gray-50 border rounded-xl text-sm">
+                                <option value="">-- Pilih Nama Mata Pelajaran --</option>
+                                <optgroup label="Kelompok Nasional">
+                                    <option value="Pendidikan Agama">Pendidikan Agama</option>
+                                    <option value="PPKn">PPKn</option>
+                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                    <option value="Matematika (Wajib)">Matematika (Wajib)</option>
+                                    <option value="Sejarah Indonesia">Sejarah Indonesia</option>
+                                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                                </optgroup>
+                                <optgroup label="Kelompok Peminatan MIPA">
+                                    <option value="Matematika (Peminatan)">Matematika (Peminatan)</option>
+                                    <option value="Biologi">Biologi</option>
+                                    <option value="Fisika">Fisika</option>
+                                    <option value="Kimia">Kimia</option>
+                                </optgroup>
+                                <optgroup label="Kelompok Peminatan IPS">
+                                    <option value="Geografi">Geografi</option>
+                                    <option value="Sejarah (Peminatan)">Sejarah (Peminatan)</option>
+                                    <option value="Sosiologi">Sosiologi</option>
+                                    <option value="Ekonomi">Ekonomi</option>
+                                </optgroup>
+                                <optgroup label="Muatan Lokal & Lainnya">
+                                    <option value="Seni Budaya">Seni Budaya</option>
+                                    <option value="PJOK">PJOK</option>
+                                    <option value="Prakarya & KWU">Prakarya & KWU</option>
+                                    <option value="Informatika">Informatika</option>
+                                    <option value="Bahasa Asing">Bahasa Asing</option>
+                                    <option value="Antropologi">Antropologi</option>
+                                </optgroup>
+                            </select>
                             <input type="text" id="admin-url" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" placeholder="URL Google Form">
                             <div class="flex gap-2">
                                 <input type="text" id="admin-pin" class="flex-grow p-3 bg-gray-50 border rounded-xl text-sm font-mono font-bold" placeholder="PIN 6 DIGIT">
@@ -155,7 +188,13 @@
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-                        <h3 class="font-bold text-slate-800 mb-4">Monitoring Pelanggaran</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800">Monitoring Pelanggaran</h3>
+                            <div class="flex gap-2">
+                                <button onclick="loadLogs()" class="text-blue-600 font-bold text-[10px] uppercase">Refresh</button>
+                                <button onclick="clearAllLogs()" class="text-red-600 font-bold text-[10px] uppercase">Bersihkan Data</button>
+                            </div>
+                        </div>
                         <div class="overflow-x-auto max-h-[300px]">
                             <table class="w-full text-left text-[11px]">
                                 <thead class="bg-gray-50 text-gray-400 font-bold sticky top-0">
@@ -212,7 +251,7 @@
 </div>
 
 <script>
-    const gasUrl = "https://script.google.com/macros/s/AKfycbw_XYorpf_8LICeywq9o6LBOjEnN1sah80W_n5YS6D-w5QsAg9CyPpcxGeeBpf1caqo/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbzdXZbxKXrhbKygaHq2xekdWqfPpac14SCEYoDR7iBIRVsdTxcccK6vKdQcMuYOAuUSoA/exec";
     let currentRole = 'peserta';
     let isExamStarted = false;
     let timerInterval = null;
@@ -271,7 +310,8 @@
             const elem = document.documentElement;
             if (elem.requestFullscreen) { await elem.requestFullscreen(); }
             else if (elem.webkitRequestFullscreen) { await elem.webkitRequestFullscreen(); }
-        } catch (e) { console.warn("Fullscreen only works on HTTPS."); }
+            else if (elem.msRequestFullscreen) { await elem.msRequestFullscreen(); }
+        } catch (e) { console.warn("Fullscreen requires user interaction or HTTPS."); }
     }
 
     async function handleLogin() {
@@ -296,7 +336,14 @@
                 if (data.active !== "true") throw new Error("Ujian sedang Non-Aktif.");
                 if (data.remainingSeconds <= 0) throw new Error("Waktu ujian sudah habis.");
 
-                studentData = { name, className: cls, subject: sub, url: data.url, remainingSeconds: data.remainingSeconds };
+                studentData = { 
+                    name, 
+                    className: cls, 
+                    subject: sub, 
+                    subjectName: data.subjectName || sub, // Gunakan Nama Mapel dari server
+                    url: data.url, 
+                    remainingSeconds: data.remainingSeconds 
+                };
                 await enterFullscreen();
                 startExam();
             } else {
@@ -325,7 +372,8 @@
     function startExam() {
         showScreen('exam-screen');
         document.getElementById('display-name').innerText = studentData.name;
-        document.getElementById('display-info').innerText = `${studentData.className} • ${studentData.subject}`;
+        // Menampilkan Nama Lengkap Mapel (bukan kode) di header siswa
+        document.getElementById('display-info').innerText = `${studentData.className} • ${studentData.subjectName}`;
         document.getElementById('exam-iframe').src = studentData.url;
         isExamStarted = true;
         startTimer(studentData.remainingSeconds);
@@ -456,24 +504,55 @@
     }
 
     async function saveExamConfig() {
-        const btn = document.getElementById('btn-save-config'), txt = document.getElementById('save-config-text'), spinner = document.getElementById('save-config-spinner');
-        const sub = document.getElementById('admin-subject').value.toUpperCase().trim(), url = document.getElementById('admin-url').value;
-        const pin = document.getElementById('admin-pin').value, dur = document.getElementById('admin-duration').value, act = document.getElementById('admin-active').value;
-        if (!sub || !url || !pin || !dur) return showMessage("Gagal", "Lengkapi data!", "error");
+        const btn = document.getElementById('btn-save-config'), 
+              txt = document.getElementById('save-config-text'), 
+              spinner = document.getElementById('save-config-spinner');
+        
+        const sub = document.getElementById('admin-subject').value.toUpperCase().trim();
+        const subName = document.getElementById('admin-subject-name').value;
+        const url = document.getElementById('admin-url').value;
+        const pin = document.getElementById('admin-pin').value;
+        const dur = document.getElementById('admin-duration').value;
+        const act = document.getElementById('admin-active').value;
+        
+        if (!sub || !subName || !url || !pin || !dur) {
+            return showMessage("Gagal", "Lengkapi semua data termasuk Nama Mapel!", "error");
+        }
         
         setLoading(btn, txt, spinner, true, "Simpan...");
+        
         const params = new URLSearchParams({
             action: 'saveConfig',
             subject: sub,
+            subjectName: subName,
             url: url,
             pin: pin,
             duration: dur,
             active: act
         });
         
-        await fetch(`${gasUrl}?${params.toString()}`, { method: 'POST' });
-        setLoading(btn, txt, spinner, false, "Update Database");
-        loadAllData();
+        try { 
+            const res = await fetch(`${gasUrl}?${params.toString()}`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                showMessage("Berhasil", "Data ujian telah diperbarui.", "success");
+            }
+        } catch(e) {
+            showMessage("Error", "Gagal menghubungi server.", "error");
+        } finally {
+            setLoading(btn, txt, spinner, false, "Update Database");
+            loadAllData();
+        }
+    }
+
+    async function clearAllLogs() {
+        if (!confirm("Hapus semua riwayat pelanggaran secara permanen?")) return;
+        const tbody = document.getElementById('violation-table-body');
+        tbody.innerHTML = "<tr><td colspan='5' class='text-center p-4'>Membersihkan...</td></tr>";
+        try {
+            await fetch(`${gasUrl}?action=clearViolations`, { method: 'POST' });
+            loadLogs();
+        } catch(e) { showMessage("Error", "Gagal menghapus log", "error"); }
     }
 
     async function addProctor() {
