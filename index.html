@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT SMAN 1 PRONOJIWO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .iframe-container { height: calc(100vh - 80px); }
+        #violation-overlay { display: none; backdrop-filter: blur(12px); }
+        .role-card.active { border-color: #2563eb; background-color: #eff6ff; }
+        .role-card.active svg { color: #2563eb; }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fade-in 0.3s ease-out forwards; }
+        .loading-spinner {
+            border: 2px solid #f3f3f3; border-top: 2px solid #2563eb;
+            border-radius: 50%; width: 14px; height: 14px;
+            animation: spin 0.8s linear infinite; display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input:disabled, select:disabled { opacity: 0.7; cursor: not-allowed; }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-900 leading-tight">
+
+<div id="app">
+    <div id="login-screen" class="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-900 via-slate-900 to-black">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-lg animate-fade">
+            <div class="flex flex-col items-center mb-8">
+                <img src="https://i.postimg.cc/zHF5TH69/logo-sman1.png" alt="Logo SMAN 1" class="h-20 w-auto mb-4 drop-shadow-md" onerror="this.src='https://placehold.co/200x200/2563eb/white?text=SMAN1'">
+                <h1 class="text-2xl font-extrabold text-center text-slate-800 tracking-tight">CBT SMAN 1 PRONOJIWO</h1>
+                <p class="text-gray-500 text-xs mt-1 font-medium text-center uppercase tracking-widest">Ujian Online Terintegrasi</p>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="grid grid-cols-2 gap-3 mb-8">
+                <button onclick="setRole('peserta')" id="btn-role-peserta" class="role-card active flex flex-col items-center p-3 border-2 rounded-2xl transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="mb-1 text-gray-400"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-center">Peserta Ujian</span>
+                </button>
+                <button onclick="setRole('staff')" id="btn-role-staff" class="role-card flex flex-col items-center p-3 border-2 rounded-2xl transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="mb-1 text-gray-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-center">Admin/Pengawas</span>
+                </button>
+            </div>
+
+            <div id="form-container" class="space-y-4">
+                <div id="student-inputs" class="space-y-4">
+                    <input type="text" id="login-name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Nama Lengkap">
+                    <select id="login-class" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none"></select>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="login-subject" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none uppercase" placeholder="Kode Mapel">
+                        <div class="relative">
+                            <input type="password" id="login-pin" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none pr-12" placeholder="PIN Ujian">
+                            <button onclick="toggleView('login-pin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600">
+                                <svg id="eye-icon-pin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="staff-inputs" class="hidden space-y-4">
+                    <input type="text" id="staff-username" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" placeholder="Username (Admin/ID Pengawas)">
+                    <div class="relative">
+                        <input type="password" id="staff-password" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none pr-12" placeholder="Password Otoritas">
+                        <button onclick="toggleView('staff-password', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600">
+                            <svg id="eye-icon-staff" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <button onclick="handleLogin()" id="btn-login" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                    <span id="btn-login-text">Masuk ke Sistem</span>
+                    <div id="btn-login-spinner" class="hidden loading-spinner !border-t-white"></div>
+                </button>
+            </div>
+        </div>
+        <div class="mt-8 text-white/40 text-[10px] font-medium tracking-widest uppercase">
+            © 2026 SMAN 1 Pronojiwo • IT Team
+        </div>
+    </div>
+
+    <div id="admin-screen" class="hidden min-h-screen bg-slate-50 p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                <div>
+                    <div id="role-badge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase mb-2 inline-block tracking-widest">DASHBOARD</div>
+                    <h1 class="text-3xl font-black text-slate-800">Kontrol Pusat CBT</h1>
+                </div>
+                <button onclick="logout()" class="bg-red-50 text-red-600 px-6 py-2.5 rounded-2xl text-sm font-bold hover:bg-red-100 transition-colors">Log Keluar</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Management Panel (Admin Only) -->
+                <div id="admin-management" class="lg:col-span-4 space-y-6">
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                        <h3 class="font-bold mb-4 text-slate-800 flex items-center gap-2">Sesi Ujian Baru</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="admin-subject" class="w-full p-3 bg-gray-50 border rounded-xl text-sm uppercase" placeholder="KODE MAPEL">
+                            <input type="text" id="admin-url" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" placeholder="URL Google Form">
+                            <div class="flex gap-2">
+                                <input type="text" id="admin-pin" class="flex-grow p-3 bg-gray-50 border rounded-xl text-sm font-mono font-bold" placeholder="PIN 6 DIGIT">
+                                <button onclick="generatePIN('admin-pin')" class="bg-slate-100 p-3 rounded-xl hover:bg-slate-200 transition-all" title="Acak PIN">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                                </button>
+                            </div>
+                            <input type="number" id="admin-duration" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" placeholder="Durasi (Menit)">
+                            <select id="admin-active" class="w-full p-3 bg-gray-50 border rounded-xl text-sm">
+                                <option value="true">SET AKTIF</option>
+                                <option value="false">NON-AKTIFKAN</option>
+                            </select>
+                            <button onclick="saveExamConfig()" id="btn-save-config" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-blue-700 transition-all text-[10px] flex items-center justify-center gap-2 uppercase">
+                                <span id="save-config-text">Update Database</span>
+                                <div id="save-config-spinner" class="hidden loading-spinner !border-t-white"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                        <h3 class="font-bold mb-4 text-slate-800">Manajemen Pengawas</h3>
+                        <div class="space-y-3 mb-6 border-b pb-6">
+                            <input type="text" id="new-proctor-name" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" placeholder="Nama/ID Pengawas Baru">
+                            <input type="text" id="new-proctor-pass" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" placeholder="Password Baru">
+                            <button onclick="addProctor()" id="btn-add-proctor" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-[10px] flex items-center justify-center gap-2 uppercase">
+                                <span id="add-proctor-text">Tambah Otoritas</span>
+                                <div id="add-proctor-spinner" class="hidden loading-spinner !border-t-white"></div>
+                            </button>
+                        </div>
+                        <div id="proctor-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                    </div>
+                </div>
+
+                <div id="monitoring-panel" class="lg:col-span-8 space-y-6">
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800">Daftar Ujian Aktif</h3>
+                            <button onclick="loadExamsOnly()" class="text-blue-600 font-bold text-[10px] flex items-center gap-1 uppercase tracking-tighter hover:underline">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                                Refresh Data
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-50 text-gray-400 font-bold uppercase tracking-wider">
+                                    <tr>
+                                        <th class="p-3">MAPEL</th>
+                                        <th class="p-3">PIN AKTIF</th>
+                                        <th class="p-3">DURASI</th>
+                                        <th class="p-3">STATUS</th>
+                                        <th class="p-3">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="active-exams-table" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-slate-800 mb-4">Monitoring Pelanggaran</h3>
+                        <div class="overflow-x-auto max-h-[300px]">
+                            <table class="w-full text-left text-[11px]">
+                                <thead class="bg-gray-50 text-gray-400 font-bold sticky top-0">
+                                    <tr><th class="p-3">WAKTU</th><th class="p-3">NAMA</th><th class="p-3">KELAS</th><th class="p-3">MAPEL</th><th class="p-3">JENIS</th></tr>
+                                </thead>
+                                <tbody id="violation-table-body" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="exam-screen" class="hidden h-screen flex flex-col bg-white">
+        <header class="h-20 bg-white border-b px-6 flex justify-between items-center shadow-sm z-10">
+            <div class="flex gap-4 items-center">
+                <div class="bg-blue-600 p-2.5 rounded-xl text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+                </div>
+                <div>
+                    <h2 id="display-name" class="font-bold text-slate-800 leading-tight">--</h2>
+                    <p id="display-info" class="text-[11px] text-gray-500 font-medium tracking-wide uppercase">--</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-center px-5 py-2 bg-red-50 rounded-2xl border border-red-100 flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <p id="timer" class="text-xl font-mono font-black text-red-600">00:00:00</p>
+                </div>
+                <button onclick="confirmExit()" class="text-gray-300 hover:text-red-500 transition-colors p-2 bg-gray-50 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </div>
+        </header>
+        <main class="flex-grow iframe-container bg-slate-100 overflow-hidden relative">
+            <iframe id="exam-iframe" src="about:blank" class="w-full h-full border-none shadow-inner" loading="lazy"></iframe>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="alert-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[2rem] w-full max-w-sm shadow-2xl animate-fade text-center border-t-8 border-blue-500" id="alert-container">
+            <h3 id="alert-title" class="text-xl font-black mb-2 text-slate-800">Pemberitahuan</h3>
+            <p id="alert-message" class="text-sm text-gray-500 mb-6 leading-relaxed"></p>
+            <button onclick="closeAlert()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-slate-900 transition-all">Selesai</button>
+        </div>
+    </div>
+
+    <div id="violation-overlay" class="fixed inset-0 bg-red-600 flex flex-col items-center justify-center text-white z-[9999] p-8 text-center">
+        <h2 class="text-5xl font-black mb-4 tracking-tighter uppercase">TERKUNCI</h2>
+        <p class="text-lg opacity-90 max-w-md mb-10 leading-relaxed font-semibold">Aktivitas mencurigakan terdeteksi. Silakan hubungi pengawas ruang untuk mendapatkan PIN terbaru.</p>
+        <button onclick="location.reload()" class="bg-white text-red-600 px-12 py-4 rounded-2xl font-black shadow-2xl active:scale-95 transition-all">ULANGI LOGIN</button>
+    </div>
+</div>
+
+<script>
+    const gasUrl = "https://script.google.com/macros/s/AKfycbyYdBG4NORTWg4jnwY49xuqjyoI_DGKj7kL5vm3fobP_XXMtJGZYrGg2BAn0qw0xFaICQ/exec";
+    let currentRole = 'peserta';
+    let isExamStarted = false;
+    let timerInterval = null;
+    let studentData = null;
+    let myRole = '';
+
+    const classSelect = document.getElementById('login-class');
+    ['X', 'XI', 'XII'].forEach(grade => {
+        for (let i = 1; i <= 8; i++) {
+            const opt = document.createElement('option');
+            opt.value = `${grade}-${i}`;
+            opt.textContent = `KELAS ${grade}-${i}`;
+            classSelect.appendChild(opt);
+        }
+    });
+
+    function toggleView(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const iconId = inputId === 'login-pin' ? 'eye-icon-pin' : 'eye-icon-staff';
+        const icon = document.getElementById(iconId);
+        
+        if (input.type === "password") {
+            input.type = "text";
+            icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+        } else {
+            input.type = "password";
+            icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+        }
+    }
+
+    function showScreen(id) {
+        ['login-screen', 'exam-screen', 'admin-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function setRole(role) {
+        currentRole = role;
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+        if (role === 'peserta') {
+            document.getElementById('btn-role-peserta').classList.add('active');
+            document.getElementById('student-inputs').classList.remove('hidden');
+            document.getElementById('staff-inputs').classList.add('hidden');
+        } else {
+            document.getElementById('btn-role-staff').classList.add('active');
+            document.getElementById('student-inputs').classList.add('hidden');
+            document.getElementById('staff-inputs').classList.remove('hidden');
+        }
+    }
+
+    function generatePIN(targetId) {
+        const pin = Math.floor(100000 + Math.random() * 900000).toString();
+        if (targetId) document.getElementById(targetId).value = pin;
+        return pin;
+    }
+
+    async function handleLogin() {
+        const btn = document.getElementById('btn-login'), txt = document.getElementById('btn-login-text'), spinner = document.getElementById('btn-login-spinner');
+        
+        try {
+            if (currentRole === 'peserta') {
+                const name = document.getElementById('login-name').value.trim();
+                const cls = document.getElementById('login-class').value;
+                const sub = document.getElementById('login-subject').value.toUpperCase().trim();
+                const pin = document.getElementById('login-pin').value;
+
+                if (!name || !sub || !pin) throw new Error("Lengkapi semua data login!");
+                
+                setLoading(btn, txt, spinner, true, "Verifikasi...");
+
+                const res = await fetch(`${gasUrl}?action=getExam&subject=${encodeURIComponent(sub)}&studentName=${encodeURIComponent(name)}&studentClass=${cls}`, { method: 'POST' });
+                const exam = await res.json();
+
+                if (exam.error) throw new Error(exam.error);
+                if (exam.pin !== pin) throw new Error("PIN Ujian Salah!");
+                if (exam.active !== "true") throw new Error("Ujian sedang Non-Aktif.");
+                if (exam.remainingSeconds <= 0) throw new Error("Waktu ujian Anda sudah habis.");
+
+                studentData = { name, className: cls, subject: sub, url: exam.url, remainingSeconds: parseInt(exam.remainingSeconds) };
+                startExam();
+            } else {
+                const name = document.getElementById('staff-username').value.trim();
+                const pass = document.getElementById('staff-password').value;
+                if (!name || !pass) throw new Error("Isi Username & Password!");
+
+                setLoading(btn, txt, spinner, true, "Memverifikasi...");
+
+                const res = await fetch(`${gasUrl}?action=loginStaff&name=${encodeURIComponent(name)}&password=${encodeURIComponent(pass)}`, { method: 'POST' });
+                const data = await res.json();
+
+                if (!data.success) throw new Error("Kredensial Salah! Cek Username/Password.");
+                
+                myRole = data.role;
+                renderDashboard();
+            }
+        } catch (e) {
+            showMessage("Gagal", e.message, "error");
+        } finally {
+            setLoading(btn, txt, spinner, false, "Masuk ke Sistem");
+        }
+    }
+
+    function setLoading(btn, txt, spinner, isLoading, label) {
+        btn.disabled = isLoading;
+        txt.innerText = label;
+        spinner.classList.toggle('hidden', !isLoading);
+    }
+
+    function startExam() {
+        showScreen('exam-screen');
+        document.getElementById('display-name').innerText = studentData.name;
+        document.getElementById('display-info').innerText = `${studentData.className} • ${studentData.subject}`;
+        document.getElementById('exam-iframe').src = studentData.url;
+        isExamStarted = true;
+        startTimer(studentData.remainingSeconds);
+
+        document.addEventListener('visibilitychange', () => { if (document.hidden && isExamStarted) triggerViolation("Ganti Tab"); });
+        window.onblur = () => {
+            setTimeout(() => {
+                if (isExamStarted && document.activeElement !== document.getElementById('exam-iframe')) {
+                    triggerViolation("Pindah Layar/Split Screen");
+                }
+            }, 400);
+        };
+    }
+
+    async function triggerViolation(type) {
+        isExamStarted = false;
+        document.getElementById('violation-overlay').style.display = 'flex';
+        document.getElementById('exam-iframe').src = "about:blank";
+        const params = new URLSearchParams({ action: 'logViolation', name: studentData.name, class: studentData.className, subject: studentData.subject, type });
+        await fetch(`${gasUrl}?${params.toString()}`, { method: 'POST' });
+    }
+
+    function startTimer(sec) {
+        clearInterval(timerInterval);
+        function tick() {
+            if (sec <= 0) { clearInterval(timerInterval); logout(); return; }
+            const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+            document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            sec--;
+        }
+        tick();
+        timerInterval = setInterval(tick, 1000);
+    }
+
+    async function renderDashboard() {
+        showScreen('admin-screen');
+        const roleLabel = myRole === 'admin' ? "ADMIN" : "PENGAWAS";
+        document.getElementById('role-badge').innerText = roleLabel;
+        document.getElementById('admin-management').classList.toggle('hidden', myRole !== 'admin');
+        document.getElementById('monitoring-panel').className = myRole === 'admin' ? "lg:col-span-8 space-y-6" : "lg:col-span-12 space-y-6";
+        loadLogs();
+        loadAllData();
+    }
+
+    async function loadAllData() {
+        if (myRole === 'admin') {
+            const res = await fetch(`${gasUrl}?action=getProctors`, { method: 'POST' });
+            const data = await res.json();
+            const list = document.getElementById('proctor-list');
+            list.innerHTML = "";
+            data.data.slice(1).forEach(p => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center p-3 bg-gray-50 rounded-xl text-xs";
+                div.innerHTML = `<span class="font-bold text-slate-700">${p[0]}</span>${p[0].toLowerCase() !== 'admin' ? `<button onclick="delProctor('${p[0]}')" class="text-red-500 font-bold hover:underline">Hapus</button>` : '<span class="text-gray-400">Default</span>'}`;
+                list.appendChild(div);
+            });
+        }
+        loadExamsOnly();
+    }
+
+    async function loadExamsOnly() {
+        const tbody = document.getElementById('active-exams-table');
+        try {
+            const res = await fetch(`${gasUrl}?action=getAllExams`, { method: 'POST' });
+            const data = await res.json();
+            tbody.innerHTML = "";
+            
+            data.data.slice(1).forEach(e => {
+                const isActive = String(e[4]).toLowerCase() === "true";
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-700">${e[0]}</td>
+                    <td class="p-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-lg border border-amber-200 font-mono font-black text-sm">${e[2]}</span>
+                            <button onclick="refreshPin('${e[0]}','${e[1]}','${e[3]}')" class="text-blue-500 hover:rotate-90 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg></button>
+                        </div>
+                    </td>
+                    <td class="p-3 font-medium">${e[3]}m</td>
+                    <td class="p-3">
+                        <span class="px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}">
+                            ${isActive ? 'AKTIF' : 'NON-AKTIF'}
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        ${myRole === 'admin' ? `<button onclick="delExam('${e[0]}')" class="text-red-500 font-bold hover:underline">Hapus</button>` : '-'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch(e) {
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-red-500 text-center">Gagal memuat data.</td></tr>`;
+        }
+    }
+
+    async function refreshPin(subject, url, duration) {
+        const newPin = generatePIN();
+        if(confirm(`Buat PIN baru untuk ${subject}?`)) {
+            await fetch(`${gasUrl}?action=saveConfig&subject=${subject}&url=${url}&pin=${newPin}&duration=${duration}&active=true`, { method: 'POST' });
+            loadExamsOnly();
+        }
+    }
+
+    async function saveExamConfig() {
+        const btn = document.getElementById('btn-save-config'), txt = document.getElementById('save-config-text'), spinner = document.getElementById('save-config-spinner');
+        const sub = document.getElementById('admin-subject').value.toUpperCase().trim(), url = document.getElementById('admin-url').value;
+        const pin = document.getElementById('admin-pin').value, dur = document.getElementById('admin-duration').value, act = document.getElementById('admin-active').value;
+        if (!sub || !url || !pin || !dur) return showMessage("Peringatan", "Lengkapi semua data.", "error");
+        setLoading(btn, txt, spinner, true, "Menyimpan...");
+        await fetch(`${gasUrl}?action=saveConfig&subject=${sub}&url=${url}&pin=${pin}&duration=${dur}&active=${act}`, { method: 'POST' });
+        setLoading(btn, txt, spinner, false, "Update Database");
+        loadAllData();
+    }
+
+    async function addProctor() {
+        const btn = document.getElementById('btn-add-proctor'), txt = document.getElementById('add-proctor-text'), spinner = document.getElementById('add-proctor-spinner');
+        const name = document.getElementById('new-proctor-name').value, pass = document.getElementById('new-proctor-pass').value;
+        if (!name || !pass) return;
+        setLoading(btn, txt, spinner, true, "Menambah...");
+        await fetch(`${gasUrl}?action=saveProctor&name=${encodeURIComponent(name)}&password=${encodeURIComponent(pass)}`, { method: 'POST' });
+        setLoading(btn, txt, spinner, false, "Tambah Otoritas");
+        document.getElementById('new-proctor-name').value = ""; document.getElementById('new-proctor-pass').value = "";
+        loadAllData();
+    }
+
+    async function delProctor(name) { if(confirm(`Hapus ${name}?`)) { await fetch(`${gasUrl}?action=deleteProctor&name=${name}`, { method: 'POST' }); loadAllData(); } }
+    async function delExam(sub) { if(confirm(`Hapus ujian ${sub}?`)) { await fetch(`${gasUrl}?action=deleteExam&subject=${sub}`, { method: 'POST' }); loadAllData(); } }
+
+    async function loadLogs() {
+        try {
+            const res = await fetch(`${gasUrl}?action=getViolations`, { method: 'POST' });
+            const data = await res.json();
+            const tbody = document.getElementById('violation-table-body');
+            tbody.innerHTML = "";
+            data.data.slice(1).reverse().forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="p-3 text-gray-400">${new Date(r[0]).toLocaleTimeString()}</td><td class="p-3 font-bold">${r[1]}</td><td class="p-3 text-slate-500">${r[2]}</td><td class="p-3 font-medium">${r[3]}</td><td class="p-3 text-red-600 font-black">${r[4]}</td>`;
+                tbody.appendChild(tr);
+            });
+        } catch(e){}
+    }
+
+    function showMessage(title, msg, type) {
+        document.getElementById('alert-title').innerText = title;
+        document.getElementById('alert-message').innerText = msg;
+        document.getElementById('alert-container').style.borderColor = type === 'error' ? '#ef4444' : '#22c55e';
+        document.getElementById('alert-modal').classList.remove('hidden');
+    }
+    function closeAlert() { document.getElementById('alert-modal').classList.add('hidden'); }
+    function confirmExit() { if (confirm("Keluar dari ujian?")) logout(); }
+    function logout() { isExamStarted = false; clearInterval(timerInterval); location.reload(); }
+</script>
+</body>
+</html>
