@@ -442,15 +442,16 @@
             tbody.innerHTML = "";
             data.data.slice(1).forEach((e, index) => {
                 const isActive = String(e[4]).toLowerCase() === "true";
+                const subName = (e.length > 5 && e[5]) ? e[5] : e[0]; // Ambil nama mapel atau kode sebagai cadangan
                 const tr = document.createElement('tr');
                 tr.id = `row-exam-${index}`;
                 tr.innerHTML = `
-                    <td class="p-3 font-bold text-slate-700">${e[0]}</td>
+                    <td class="p-3 font-bold text-slate-700">${e[0]}<br><span class="text-[10px] font-normal text-gray-400">${subName}</span></td>
                     <td class="p-3">
                         <div class="flex items-center gap-2">
                             <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-lg border border-amber-200 font-mono font-bold">${e[2]}</span>
                             ${myRole === 'admin' ? `
-                                <button onclick="refreshPin('${e[0]}','${encodeURIComponent(e[1])}','${e[3]}', 'row-exam-${index}')" class="text-blue-500 hover:rotate-180 transition-transform duration-500">
+                                <button onclick="refreshPin('${e[0]}','${encodeURIComponent(e[1])}','${e[3]}', 'row-exam-${index}', '${subName.replace(/'/g, "\\'")}')" class="text-blue-500 hover:rotate-180 transition-transform duration-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
                                 </button>
                             ` : ''}
@@ -479,8 +480,7 @@
         await fetch(`${gasUrl}?action=saveConfig&subject=${encodeURIComponent(subject)}&url=${encodeURIComponent(url)}&pin=${pin}&duration=${duration}&active=${!currentStatus}`, { method: 'POST' });
         loadExamsOnly();
     }
-
-    async function refreshPin(subject, encodedUrl, duration, rowId) {
+    async function refreshPin(subject, encodedUrl, duration, rowId, subjectName) {
         const row = document.getElementById(rowId);
         if (row) row.classList.add('row-loading');
         
@@ -490,6 +490,7 @@
             const params = new URLSearchParams({
                 action: 'saveConfig',
                 subject: subject,
+                subjectName: subjectName, // Kirim kembali nama mapel agar tidak terhapus
                 url: url,
                 pin: newPin,
                 duration: duration,
